@@ -1,0 +1,10 @@
+overwrite: true
+schema: "https://content.seanaye.ca/graphql"
+documents: "app/**/*.tsx"
+generates:
+  app/generated/sdk.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-graphql-request"
+
