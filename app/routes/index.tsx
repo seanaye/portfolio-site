@@ -36,11 +36,11 @@ export default function Index() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <GameOfLifeCanvas/>
-      <div className="max-w-3xl mx-auto p-4 bg-gray-200 shadow-lg shadow-slate-900 rounded-lg">
+      <div className="max-w-3xl mx-auto p-4 bg-zinc-200 shadow-lg shadow-slate-900 rounded-lg">
         <div className="sm:flex">
           <div className="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
             <img
-              className="h-32 w-full sm:w-32 border border-gray-300 bg-gray-200 text-gray-300 object-contain rounded-full"
+              className="h-32 w-32 border border-gray-300 text-gray-300 object-contain rounded-full mx-auto"
               src={
                 data.bio?.data?.attributes?.avatar?.data?.attributes?.formats
                   ?.small?.url

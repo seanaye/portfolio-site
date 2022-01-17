@@ -5,6 +5,14 @@ async function loadWasmModule(): Promise<Response> {
   return await fetch("wasm_bg.wasm");
 }
 
+function debounce(func: () => void, timeout = 300){
+  let timer: ReturnType<typeof setTimeout>;
+  return () => {
+    clearTimeout(timer);
+    timer = setTimeout(func, timeout);
+  };
+}
+
 function getSize() {
   const width =
     window.innerWidth ||
@@ -277,14 +285,13 @@ export const GameOfLifeCanvas: FC = () => {
       setMod(wasm);
     })();
 
-    function resizeHandler() {
+    const resizeHandler = debounce(() => {
       const { width: newWidth, height: newHeight } = getSize();
       const calcWidth = Math.floor(newWidth / 8);
       const calcHeight = Math.floor(newHeight / 8);
-      console.log({ newWidth, newHeight, calcWidth, calcHeight });
       setWidth(calcWidth);
       setHeight(calcHeight);
-    }
+    }, 500)
 
     resizeHandler();
     window.addEventListener("resize", resizeHandler);
@@ -335,18 +342,17 @@ export const GameOfLifeCanvas: FC = () => {
       requestAnimationFrame(renderLoop);
     };
 
-    window.addEventListener("mousemove", (e) => {
+    const handleMouse = (e: MouseEvent) => {
       const w = Math.floor(e.clientY / pxPerCell)
       const h = Math.floor(e.clientX / pxPerCell)
 
       dxUniverse.current?.set_cell(w, h, Cell.Alive)
-    })
-
-
+    }
+    window.addEventListener("mousemove", handleMouse)
     const loopId = requestAnimationFrame(renderLoop);
-
     return () => {
       cancelAnimationFrame(loopId);
+      window.removeEventListener("mousemove", handleMouse)
     };
   }, [mod, width, height]);
 
