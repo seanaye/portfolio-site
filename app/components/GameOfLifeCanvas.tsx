@@ -1,10 +1,6 @@
 import { FC, useEffect, useRef, useState } from "react";
 import load, { Cell, DxUniverse, InitOutput } from "../wasm";
 
-async function loadWasmModule(): Promise<Response> {
-  return await fetch("wasm_bg.wasm");
-}
-
 function debounce(func: () => void, timeout = 300){
   let timer: ReturnType<typeof setTimeout>;
   return () => {
@@ -280,7 +276,7 @@ export const GameOfLifeCanvas: FC = () => {
   const [width, setWidth] = useState(0);
   useEffect(() => {
     (async () => {
-      const res = await loadWasmModule();
+      const res = await fetch("wasm_bg.wasm");
       const wasm = await load(res);
       setMod(wasm);
     })();
