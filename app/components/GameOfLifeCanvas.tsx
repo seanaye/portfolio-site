@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef, useState } from "react";
 import load, { Cell, DxUniverse, InitOutput } from "../wasm";
 
-function debounce(func: () => void, timeout = 300){
+function debounce(func: () => void, timeout = 300) {
   let timer: ReturnType<typeof setTimeout>;
   return () => {
     clearTimeout(timer);
@@ -265,7 +265,7 @@ const colours = [
 ].reverse();
 
 function mapTo(num: number) {
-  return colours[num].color
+  return colours[Math.min(num, 59)].color;
 }
 
 const pxPerCell = 8;
@@ -287,7 +287,7 @@ export const GameOfLifeCanvas: FC = () => {
       const calcHeight = Math.floor(newHeight / 8);
       setWidth(calcWidth);
       setHeight(calcHeight);
-    }, 500)
+    }, 500);
 
     resizeHandler();
     window.addEventListener("resize", resizeHandler);
@@ -297,6 +297,7 @@ export const GameOfLifeCanvas: FC = () => {
   }, []);
 
   const dxUniverse = useRef<DxUniverse | null>(null);
+  const [firstTick, setFirstTick] = useState(false);
 
   useEffect(() => {
     if (!mod || !canvasRef.current) return;
@@ -319,7 +320,7 @@ export const GameOfLifeCanvas: FC = () => {
       for (let row = 0; row < height; row += 1) {
         for (let col = 0; col < width; col += 1) {
           const idx = row * width + col;
-          ctx.fillStyle = mapTo(cells[idx])
+          ctx.fillStyle = mapTo(cells[idx]);
 
           ctx.fillRect(
             col * pxPerCell + 1,
@@ -335,35 +336,40 @@ export const GameOfLifeCanvas: FC = () => {
 
     const renderLoop = () => {
       draw(ctx);
+      !firstTick && setFirstTick(true)
       requestAnimationFrame(renderLoop);
     };
 
-    const handleMouse = (e: MouseEvent) => {
-      const w = Math.floor(e.clientY / pxPerCell)
-      const h = Math.floor(e.clientX / pxPerCell)
+    const handleMouse = (e: PointerEvent) => {
+      const w = Math.floor(e.clientY / pxPerCell);
+      const h = Math.floor(e.clientX / pxPerCell);
 
-      dxUniverse.current?.set_cell(w, h, Cell.Alive)
-    }
-    window.addEventListener("mousemove", handleMouse)
+      dxUniverse.current?.set_cell(w, h, Cell.Alive);
+    };
+    window.addEventListener("pointermove", handleMouse);
     const loopId = requestAnimationFrame(renderLoop);
     return () => {
       cancelAnimationFrame(loopId);
-      window.removeEventListener("mousemove", handleMouse)
+      window.removeEventListener("pointermove", handleMouse);
     };
   }, [mod, width, height]);
 
   const canvasRef = useRef<null | HTMLCanvasElement>(null);
 
-
-  if (!dxUniverse) {
-    return <div>loading...</div>;
-  }
   return (
-    <canvas
-      className="absolute w-screen h-screen top-0 left-0 -z-50"
-      width={pxPerCell * width}
-      height={pxPerCell * height}
-      ref={canvasRef}
-    />
+    <>
+      <div
+        className="absolute w-screen h-screen top-0 left-0 -z-50"
+        style={{ backgroundColor: "#282728" }}
+      />
+      <canvas
+        className={`absolute w-screen h-screen top-0 left-0 -z-50 ${
+          !firstTick && "hidden"
+        }`}
+        width={pxPerCell * width}
+        height={pxPerCell * height}
+        ref={canvasRef}
+      />
+    </>
   );
 };

@@ -50,7 +50,7 @@ export default function Index() {
           <div>
             <h4 className="text-lg font-bold">About Me</h4>
             <p className="mt-1">{data.bio?.data?.attributes?.bio_text}</p>
-            <div className="flex flex-row mt-2 gap-2">
+            <div className="flex flex-row mt-2 gap-4">
               <a href={data?.bio?.data?.attributes?.github ?? ""} target="_blank">
                 <GithubIcon />
               </a>
