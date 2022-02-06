@@ -6,3 +6,4 @@ dist/*
 /build
 /public/build
 .env
+.mf

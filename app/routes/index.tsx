@@ -35,29 +35,38 @@ export default function Index() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <GameOfLifeCanvas/>
+      <GameOfLifeCanvas />
       <div className="max-w-3xl mx-auto p-4 bg-zinc-200 shadow-lg shadow-slate-900 rounded-lg">
         <div className="sm:flex">
           <div className="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
             <img
               className="h-32 w-32 border border-gray-300 text-gray-300 object-contain rounded-full mx-auto"
               src={
-                data.bio?.data?.attributes?.avatar?.data?.attributes?.formats
+                data?.bio?.data?.attributes?.avatar?.data?.attributes?.formats
                   ?.small?.url
               }
             />
           </div>
           <div>
             <h4 className="text-lg font-bold">About Me</h4>
-            <p className="mt-1">{data.bio?.data?.attributes?.bio_text}</p>
+            <p className="mt-1">{data?.bio?.data?.attributes?.bio_text}</p>
             <div className="flex flex-row mt-2 gap-4">
-              <a href={data?.bio?.data?.attributes?.github ?? ""} target="_blank">
+              <a
+                href={data?.bio?.data?.attributes?.github ?? ""}
+                target="_blank"
+              >
                 <GithubIcon />
               </a>
-              <a href={data?.bio?.data?.attributes?.twitter ?? ""} target="_blank">
+              <a
+                href={data?.bio?.data?.attributes?.twitter ?? ""}
+                target="_blank"
+              >
                 <TwitterIcon />
               </a>
-              <a href={data?.bio?.data?.attributes?.linkedin ?? ""} target="_blank">
+              <a
+                href={data?.bio?.data?.attributes?.linkedin ?? ""}
+                target="_blank"
+              >
                 <LinkedinIcon />
               </a>
             </div>
