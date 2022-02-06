@@ -1,5 +1,4 @@
 mod utils;
-
 use std::mem;
 
 use wasm_bindgen::prelude::*;
@@ -32,6 +31,10 @@ pub struct Universe {
 impl Universe {
     pub fn get_cell(&self, index: usize) -> Cell {
         self.cells[index]
+    }
+
+    pub fn length(&self) -> usize {
+        self.cells.len()
     }
 
     pub fn set_cell(&mut self, index: usize, state: Cell) {
@@ -129,6 +132,12 @@ pub struct DxUniverse {
 }
 
 #[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(s: &str);
+}
+
+#[wasm_bindgen]
 impl DxUniverse {
     pub fn new(width: u32, height: u32) -> DxUniverse {
         let mut cur = Universe::new(width, height);
@@ -159,7 +168,7 @@ impl DxUniverse {
     }
 
     pub fn tick(&mut self) {
-        if self.cur_frames % self.frames_per_tick == 0 {
+        if self.cur_frames == self.frames_per_tick {
             mem::swap(&mut self.next, &mut self.cur);
             self.next = self.cur.tick();
             self.cur_frames = 0
@@ -173,7 +182,7 @@ impl DxUniverse {
                 (_, Cell::Alive) => self.cur_frames % self.frames_per_tick,
                 (Cell::Dead, Cell::Dead) => 0,
                 (_, Cell::Dead) => {
-                    self.frames_per_tick - 1 - (self.cur_frames % self.frames_per_tick)
+                    (self.frames_per_tick - 1) - (self.cur_frames % self.frames_per_tick)
                 }
             }
         }
@@ -186,7 +195,9 @@ impl DxUniverse {
     
     pub fn set_cell(&mut self, row: u32, col: u32, state: Cell) {
         let idx = self.next.get_index(row, col);
-        self.next.set_cell(idx, state);
+        if idx < self.next.length() {
+            self.next.set_cell(idx, state);
+        }
     }
 
     pub fn set_size(&mut self, width: u32, height: u32) {

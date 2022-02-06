@@ -1,6 +1,9 @@
 node_modules
+.DS_Store
+dist/*
 
 /.cache
 /build
 /public/build
 .env
+.mf
